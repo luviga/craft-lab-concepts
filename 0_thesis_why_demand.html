@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From buildings to bulk: why the thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1F3; --panel:#F8FAFB; --ink:#1C2B45; --muted:#56667A; --line:#C6D0D8;
+  --build:#7A1E2E; --feed:#157A6E; --unc:#C4741F; --bulk:#1C2B45; --ghost:#9AA6B3;
+  --font:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#13202F; --panel:#182838; --ink:#E4EAF1; --muted:#9BAABA; --line:#2E4157;
+    --build:#D56B7C; --feed:#3FB9A7; --unc:#E89B4E; --bulk:#93B6E3; --ghost:#5F7084;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#13202F; --panel:#182838; --ink:#E4EAF1; --muted:#9BAABA; --line:#2E4157;
+  --build:#D56B7C; --feed:#3FB9A7; --unc:#E89B4E; --bulk:#93B6E3; --ghost:#5F7084;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font); font-size:17px; line-height:1.5}
+.wrap{max-width:1140px; margin:0 auto; padding:0 22px}
+p{margin:0 0 12px; max-width:64ch}
+h2{font-size:clamp(1.45rem,1.1rem + 1.4vw,2.05rem); line-height:1.15; letter-spacing:-0.015em; margin:0 0 14px; max-width:26ch}
+h3{font-size:1rem; margin:0 0 6px}
+button{font:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--unc); outline-offset:2px}
+
+/* hero */
+.hero{padding:44px 0 8px}
+.hero h1{font-size:clamp(2rem,1.2rem + 3.6vw,3.6rem); line-height:1.02; letter-spacing:-0.03em; margin:0 0 18px; max-width:17ch; font-weight:700}
+.hero h1 span{display:block; color:var(--muted); font-weight:400}
+.lead{font-size:1.12rem; max-width:58ch}
+.terms{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px 24px; margin:22px 0 0; padding:14px 0 0; border-top:1px solid var(--line); font-size:0.88rem}
+.terms div{margin:0}
+.terms dt{font-weight:700}
+.terms dd{margin:0; color:var(--muted)}
+.stageA{position:relative; margin:22px 0 0; border-radius:14px; background:var(--panel); border:1px solid var(--line); overflow:hidden}
+#cA{display:block; width:100%}
+.capA{display:flex; flex-wrap:wrap; gap:12px 22px; align-items:center; justify-content:space-between; margin:12px 0 0}
+.capA p{margin:0; font-size:1.05rem; min-height:3em; max-width:62ch}
+.capA small{display:block; color:var(--muted); font-size:0.86rem; margin-top:2px}
+.btn{background:var(--ink); color:var(--bg); border:0; border-radius:999px; padding:10px 18px; cursor:pointer; font-weight:700; font-size:0.95rem}
+.btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--ink)}
+
+/* sections */
+section.s{padding:64px 0 8px}
+.cols{display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:28px 40px; align-items:start}
+@media (max-width:860px){ .cols{grid-template-columns:1fr} }
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px}
+.ctrl{display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; margin:0 0 14px}
+.ctrl label{font-size:0.92rem}
+.ctrl output{font-weight:700}
+input[type=range]{width:min(320px,100%); accent-color:var(--unc)}
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden}
+.seg button{background:transparent; color:var(--ink); border:0; padding:6px 12px; cursor:pointer; border-right:1px solid var(--line); font-size:0.9rem}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--bg)}
+.note{font-size:0.9rem; color:var(--muted); border-left:3px solid var(--line); padding-left:10px}
+
+/* feeder field */
+.legend{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:0.82rem; color:var(--muted); margin:0 0 12px}
+.legend i{display:inline-block; width:11px; height:11px; border-radius:2px; vertical-align:-1px; margin-right:5px}
+.legend i.lim{height:0; width:16px; border-top:2px dashed var(--ink); border-radius:0; vertical-align:3px}
+.field{display:grid; grid-template-columns:minmax(0,1fr) 128px; gap:14px; align-items:start}
+@media (max-width:520px){ .field{grid-template-columns:1fr} }
+.arow{margin:0 0 8px}
+.arow > span{display:block; font-size:0.8rem; color:var(--muted); margin:0 0 2px}
+.tiles{display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:4px}
+@media (max-width:620px){ .tiles{gap:3px} }
+.tile{border-radius:5px; border:1px solid var(--line); background:var(--bg); transition:background .25s, border-color .25s}
+.tile svg{display:block; width:100%; height:auto}
+.tile[data-s="flex"]{background:color-mix(in srgb,var(--feed) 16%,var(--bg)); border-color:color-mix(in srgb,var(--feed) 55%,var(--line))}
+.tile[data-s="wire"]{background:color-mix(in srgb,var(--build) 18%,var(--bg)); border-color:var(--build)}
+.avg{text-align:center}
+.avg .tile{border-width:2px; max-width:128px; margin:0 auto}
+.avg p{font-size:0.8rem; color:var(--muted); margin:6px auto 0}
+.read{font-size:1.08rem; font-weight:700; margin:14px 0 0; max-width:60ch; min-height:3.2em}
+.counts{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:0.9rem; margin:8px 0 0}
+.counts b{font-size:1.05rem}
+.c-ok{color:var(--muted)} .c-flex{color:var(--feed)} .c-wire{color:var(--build)}
+
+/* speed */
+#cC{display:block; width:100%; height:340px}
+.facts{display:grid; gap:18px; margin:18px 0 0}
+.fact p{font-size:0.95rem; margin:0 0 6px}
+.fact svg{display:block; width:100%; height:auto; overflow:visible}
+
+/* headroom */
+.hbar{position:relative; height:64px; margin:30px 0 40px; border-radius:6px; background:var(--bg); border:1px solid var(--line)}
+.seg-h{position:absolute; top:0; bottom:0; transition:left .5s ease, width .5s ease}
+.cap{position:absolute; top:-22px; bottom:-22px; border-left:2px dashed var(--ink)}
+.cap span{position:absolute; top:-4px; right:6px; font-size:0.8rem; white-space:nowrap}
+.hlegend{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:0.85rem; color:var(--muted)}
+.hlegend i{display:inline-block; width:11px; height:11px; border-radius:2px; vertical-align:-1px; margin-right:5px}
+
+/* plans */
+.plans{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:20px 0 0}
+@media (max-width:760px){ .plans{grid-template-columns:1fr} }
+.plan{border-top:3px solid var(--ink); padding-top:12px}
+.plan svg{display:block; width:100%; max-width:220px; height:auto; margin:0 0 10px}
+.plan p{font-size:0.95rem}
+.coda{font-size:clamp(1.25rem,1rem + 1vw,1.7rem); line-height:1.25; font-weight:700; max-width:34ch; margin:36px 0 0}
+
+footer{padding:56px 0 48px; font-size:0.86rem; color:var(--muted)}
+footer h3{color:var(--ink)}
+footer ul{padding-left:18px; margin:0 0 18px}
+details{border-top:1px solid var(--line); padding:12px 0; margin:0 0 18px}
+summary{cursor:pointer; color:var(--ink); font-weight:700}
+@media (max-width:620px){ .avg .tile{max-width:84px} }
+@media (prefers-reduced-motion: reduce){ .seg-h,.tile{transition:none} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="hero">
+  <h1>Demand grows again. <span>Not in the same shape, the same place, or at a known speed.</span></h1>
+  <p class="lead">Heat pumps and electric vehicles (EVs) add load street by street. Data centers arrive in blocks of hundreds of megawatts (MW). National plans usually see one cost per region. This page shows why that one number can hide the answer.</p>
+  <dl class="terms">
+    <div><dt>Feeder</dt><dd>The local circuit from one substation transformer to its customers.</dd></div>
+    <div><dt>Feeder limit</dt><dd>The load at which a feeder first exceeds an equipment rating or a voltage limit.</dd></div>
+    <div><dt>Flexibility</dt><dd>Managed charging, heat-pump pre-heating, rooftop solar, and batteries, used to cut a feeder peak.</dd></div>
+    <div><dt>Large load</dt><dd>One connection of tens to hundreds of MW, such as a data center.</dd></div>
+    <div><dt>National plan</dt><dd>The generation, storage, and transmission that a national capacity expansion model proposes for each region.</dd></div>
+  </dl>
+</header>
+
+<div class="stageA" id="stageA">
+  <canvas id="cA" role="img" aria-label="300 MW of new demand shown first as one block at a transmission connection, then spread as dots over about 50 feeders."></canvas>
+</div>
+<div class="capA">
+  <p id="capA">One data center: 300 MW, one connection point, one date in a queue.<small>Each dot is 200 kilowatts (kW), about 40 homes. Illustrative numbers.</small></p>
+  <button class="btn" id="btnA">Spread it over the streets</button>
+</div>
+</div>
+
+<section class="s" aria-labelledby="hB">
+<div class="wrap cols">
+  <div>
+    <h2 id="hB">The same adoption level gives each feeder a different answer</h2>
+    <p>Each tile is one feeder. Its bar shows the peak against the feeder limit.</p>
+    <p>Move the slider to add heat pumps and EVs. Some feeders stay inside the limit. On some, flexibility removes enough of the new peak. On others, the transformer or the line must be replaced, whatever the customers do.</p>
+    <p>A national plan usually sees one cost per region. That cost describes the average feeder, shown beside the field.</p>
+    <p class="note" id="regionNote"></p>
+  </div>
+  <div class="panel">
+    <div class="ctrl">
+      <label for="adopt">Homes with a heat pump and an EV: <output id="adoptOut">30%</output></label>
+      <input type="range" id="adopt" min="0" max="100" step="5" value="30">
+      <div class="seg" role="group" aria-label="Region">
+        <button data-reg="cold" aria-pressed="true">Cold winters</button>
+        <button data-reg="mild" aria-pressed="false">Mild winters</button>
+      </div>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span><i style="background:var(--ghost)"></i>Present peak</span>
+      <span><i style="background:var(--unc)"></i>New peak</span>
+      <span><i style="background:var(--feed)"></i>Part flexibility removes</span>
+      <span><i class="lim"></i>Feeder limit</span>
+    </div>
+    <div class="field">
+      <div id="field"></div>
+      <div class="avg">
+        <div class="tile" id="avgTile"></div>
+        <p>The average feeder: what one cost per region describes</p>
+      </div>
+    </div>
+    <div class="counts" id="counts"></div>
+    <p class="read" id="readB" aria-live="polite"></p>
+  </div>
+</div>
+</section>
+
+<section class="s" aria-labelledby="hC">
+<div class="wrap cols">
+  <div>
+    <h2 id="hC">Nobody knows the speed</h2>
+    <p>Street load grows with each heat pump and each car that people buy. The speed depends on prices, policy, and habits.</p>
+    <p>Large loads arrive in steps. A request can connect in two years, in ten, or never.</p>
+    <div class="facts">
+      <div class="fact">
+        <p>In Alberta, 29 proposed data center projects asked for more than 16 gigawatts (GW) of grid connections in 2025. The system operator set an interim limit of 1,200 MW on new large loads until 2028.</p>
+        <svg id="fAB" viewBox="0 0 400 70" role="img" aria-label="Bar comparison: more than 16,000 MW requested against an interim limit of 1,200 MW."></svg>
+      </div>
+      <div class="fact">
+        <p>In the United States, data centers used 4.4% of electricity in 2023. Projections for 2028 range from 6.7% to 12%.</p>
+        <svg id="fUS" viewBox="0 0 400 70" role="img" aria-label="Share of U.S. electricity: 4.4% in 2023, a projected range of 6.7% to 12% in 2028."></svg>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <canvas id="cC" role="img" aria-label="Possible futures of added peak load in one region, 2025 to 2050, against the regional headroom."></canvas>
+    <div class="ctrl" style="margin:12px 0 0">
+      <button class="btn" id="btnC1">Draw one more future</button>
+      <button class="btn ghost" id="btnC20">Draw 20 more</button>
+    </div>
+    <p class="read" id="readC" aria-live="polite"></p>
+    <p class="note">Each line is one possible future for one region: street load plus any large loads that connect. The thick line is the latest draw. The bounds are illustrative. No future carries a probability.</p>
+  </div>
+</div>
+</section>
+
+<section class="s" aria-labelledby="hD">
+<div class="wrap cols">
+  <div>
+    <h2 id="hD">Both kinds of load draw on the same upstream capacity</h2>
+    <p>Street load and large loads compete for the same generation and transmission. A megawatt that flexibility removes on a feeder is a megawatt free upstream.</p>
+    <p>A plan that cannot see feeders cannot count that megawatt. It also cannot see the feeders that need new wires anyway.</p>
+    <p class="note">Distribution costs rise too. Since 2014, growth in U.S. investor-owned utility distribution costs accounts for over 30% of the national-average rate increase.</p>
+  </div>
+  <div class="panel">
+    <div class="ctrl">
+      <div class="seg" role="group" aria-label="Flexibility on feeders">
+        <button data-flex="0" aria-pressed="true">No flexibility</button>
+        <button data-flex="1" aria-pressed="false">Flexibility on feeders</button>
+      </div>
+      <div class="seg" role="group" aria-label="Data center">
+        <button data-dc="0" aria-pressed="false">No data center</button>
+        <button data-dc="1" aria-pressed="true">300 MW data center</button>
+      </div>
+    </div>
+    <div class="hbar" id="hbar" role="img" aria-label="Regional capacity bar">
+      <div class="seg-h" id="hExist" style="background:var(--ghost)"></div>
+      <div class="seg-h" id="hStreet" style="background:var(--unc)"></div>
+      <div class="seg-h" id="hFreed" style="background:repeating-linear-gradient(45deg,var(--feed) 0 3px,transparent 3px 8px); border:2px solid var(--feed)"></div>
+      <div class="seg-h" id="hDC" style="background:var(--bulk)"></div>
+      <div class="cap" id="hCap"><span>Upstream capacity, 1,000 MW</span></div>
+    </div>
+    <div class="hlegend" aria-hidden="true">
+      <span><i style="background:var(--ghost)"></i>Present load, 520 MW</span>
+      <span><i style="background:var(--unc)"></i>Street load, 240 MW (160 MW with flexibility)</span>
+      <span><i style="background:var(--feed)"></i>Freed by flexibility, 80 MW</span>
+      <span><i style="background:var(--bulk)"></i>Data center, 300 MW</span>
+    </div>
+    <p class="read" id="readD" aria-live="polite"></p>
+    <p class="note">Illustrative numbers for one region.</p>
+  </div>
+</div>
+</section>
+
+<section class="s" aria-labelledby="hE">
+<div class="wrap">
+  <h2 id="hE">The question the thesis tests</h2>
+  <p class="lead">When a national plan can see how individual feeders respond to electrification, does it propose a different build? Which feeder and demand conditions cause the difference?</p>
+  <p>The thesis solves the same national model three times, with the same inputs, and compares the plans.</p>
+  <div class="plans">
+    <div class="plan">
+      <svg id="pBlind" viewBox="0 0 220 112" aria-hidden="true"></svg>
+      <h3>Blind</h3>
+      <p>The plan sees no distribution cost. Every feeder is invisible.</p>
+    </div>
+    <div class="plan">
+      <svg id="pFlat" viewBox="0 0 220 112" aria-hidden="true"></svg>
+      <h3>Flat</h3>
+      <p>The plan charges one cost per MW in every region. Every feeder looks like the average feeder.</p>
+    </div>
+    <div class="plan">
+      <svg id="pInf" viewBox="0 0 220 112" aria-hidden="true"></svg>
+      <h3>Feeder-informed</h3>
+      <p>Each region gets three values from feeder simulations: the load at which problems start, the cost of each further MW, and the peak that flexibility removes.</p>
+    </div>
+  </div>
+  <p class="note">Each square is one of the 48 feeders above, at 45% adoption with cold winters. Gray: inside the limit. Green: flexibility is enough. Red: new wires.</p>
+  <p class="coda">If the three plans coincide, national models can keep distribution simple. That is also a result.</p>
+</div>
+</section>
+
+<footer>
+<div class="wrap">
+  <details>
+    <summary>Internal notes (not for review)</summary>
+    <p>Hero, feeder field, futures chart, and capacity bar: every number is a stylized parameter in the script at the end of this file. None is a model result. Feeder field: 48 feeders, 12 per working archetype label. Futures: street load is an S-curve with a uniform midpoint from 2030 to 2046 and a ceiling from 200 to 600 MW. Large loads: 0 to 3 blocks of 100, 200, or 300 MW. Alberta, U.S. share, and distribution-cost facts: as stated in the research summary of September 2026.</p>
+  </details>
+  <h3>Sources</h3>
+  <ul>
+    <li>Alberta Electric System Operator, large-load connection requests and interim limit, 2025.</li>
+    <li>Lawrence Berkeley National Laboratory, United States Data Center Energy Usage Report, 2024.</li>
+    <li>U.S. investor-owned utility distribution cost growth since 2014, as cited in the research summary.</li>
+  </ul>
+  <p>From buildings to bulk: distribution grid experiments for electrification planning under uncertainty.</p>
+</div>
+</footer>
+
+<script>
+(function(){
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+const css = n => getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();
+function hex(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+let C = {};
+function readColors(){ ['bg','panel','ink','muted','line','build','feed','unc','bulk','ghost'].forEach(k=>C[k]=css(k)); }
+readColors();
+function setupCanvas(cv,h){ const dpr=Math.min(2,window.devicePixelRatio||1); const w=cv.clientWidth; cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr); cv.style.height=h+'px'; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return {ctx,w,h}; }
+const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+
+/* ---------- Hero: one block, or 1,500 dots over 50 feeders ---------- */
+const cA=document.getElementById('cA'), btnA=document.getElementById('btnA'), capA=document.getElementById('capA');
+const N=1500, NF=50;
+let A={dots:[],feeders:[],T:0,goal:0,anim:null,geo:null};
+function layoutA(){
+  const w=cA.clientWidth, mobile=w<640;
+  const h = mobile ? Math.round(w*1.85) : Math.round(Math.min(560,Math.max(380,w*0.5)));
+  const {ctx}=setupCanvas(cA,h); A.ctx=ctx;
+  const pad=18;
+  let bz, city, cols, rows;
+  if(!mobile){ bz={x:pad,y:pad,w:w*0.27,h:h-2*pad}; city={x:w*0.32,y:pad+18,w:w*0.68-pad,h:h-2*pad-18}; cols=10; rows=5; }
+  else { bz={x:pad,y:pad,w:w-2*pad,h:h*0.26}; city={x:pad+10,y:h*0.26+pad+24,w:w-2*pad-10,h:h*0.74-2*pad-24}; cols=5; rows=10; }
+  const side=Math.min(bz.w*0.72,bz.h*0.72), n=39, s=side/n;
+  const bx=bz.x+(bz.w-side)/2, by=bz.y+(bz.h-side)/2+ (mobile?6:0);
+  const rng=mulberry32(11);
+  // feeders
+  const cw=city.w/cols, ch=city.h/rows; const feeders=[];
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const x=city.x+c*cw, y=city.y+r*ch, p=Math.min(cw,ch)*0.14;
+    const sub={x:x+p, y:y+ch/2};
+    const trunk={x0:x+p,x1:x+cw-p,y:y+ch/2};
+    const lats=[0.34,0.58,0.82].map(f=>({x:trunk.x0+(trunk.x1-trunk.x0)*f, y0:y+p, y1:y+ch-p}));
+    const slots=[]; const off=Math.max(1.6,cw*0.035);
+    lats.forEach(L=>{ const m=9; for(let j=0;j<=m;j++){ const yy=L.y0+(L.y1-L.y0)*j/m; if(Math.abs(yy-trunk.y)<off*1.5) continue; slots.push([L.x-off,yy],[L.x+off,yy]); }});
+    for(let j=1;j<10;j++){ const xx=trunk.x0+(trunk.x1-trunk.x0)*j/10; slots.push([xx,trunk.y-off],[xx,trunk.y+off]); }
+    feeders.push({x,y,cw,ch,sub,trunk,lats,slots,row:r,col:c});
+  }
+  // counts per feeder, sum to N
+  const raw=feeders.map(()=>16+rng()*28); const tot=raw.reduce((a,b)=>a+b,0);
+  let counts=raw.map(v=>Math.floor(v/tot*N)); let rem=N-counts.reduce((a,b)=>a+b,0); for(let i=0;rem>0;i=(i+1)%NF,rem--) counts[i]++;
+  const targets=[];
+  feeders.forEach((f,i)=>{ const sl=f.slots.slice(); for(let k=sl.length-1;k>0;k--){const j=Math.floor(rng()*(k+1));[sl[k],sl[j]]=[sl[j],sl[k]];}
+    for(let k=0;k<counts[i];k++){ const b=sl[k%sl.length]; const jit=k>=sl.length?1.4:0; targets.push({x:b[0]+(rng()-.5)*jit*2,y:b[1]+(rng()-.5)*jit*2,f:i}); } });
+  // block slots row-major, targets row-major (by feeder row then x)
+  const slotsB=[]; for(let i=0;i<N;i++){ const c=i%n, r=Math.floor(i/n); slotsB.push({x:bx+(c+.5)*s,y:by+(r+.5)*s}); }
+  const key=mobile ? (t=>t.y*10000+t.x) : (t=>Math.floor((t.y-city.y)/(city.h/rows*0.5))*100000+t.x);
+  targets.sort((a,b)=>key(a)-key(b));
+  const bkey=mobile ? (t=>t.y*10000+t.x) : (t=>Math.floor((t.y-by)/(side/ (rows*2)))*100000+t.x);
+  slotsB.sort((a,b)=>bkey(a)-bkey(b));
+  const cx=bx+side/2, cy=by+side/2; let dmax=0;
+  A.dots=targets.map((t,i)=>{ const d=Math.hypot(t.x-cx,t.y-cy); dmax=Math.max(dmax,d); return {a:slotsB[i],b:t,d}; });
+  A.dots.forEach(d=>d.delay=0.5*d.d/dmax + (rng()*0.08));
+  const node = mobile ? {x:city.x-6,y:city.y-14} : {x:city.x-16,y:city.y+city.h/2};
+  A.geo={w,h,mobile,bz,city,side,bx,by,s,feeders,node,rows,cols,rDot:Math.max(1.1,Math.min(s*0.42,cw*0.045))};
+  drawA();
+}
+function drawA(){
+  const g=A.geo, ctx=A.ctx; if(!g) return;
+  ctx.clearRect(0,0,g.w,g.h);
+  // streets
+  ctx.strokeStyle=C.line; ctx.lineWidth=1;
+  g.feeders.forEach(f=>{ ctx.beginPath(); ctx.moveTo(f.trunk.x0,f.trunk.y); ctx.lineTo(f.trunk.x1,f.trunk.y); f.lats.forEach(L=>{ctx.moveTo(L.x,L.y0); ctx.lineTo(L.x,L.y1);}); ctx.stroke(); });
+  // subtransmission: spine + per-row bus
+  ctx.strokeStyle=C.muted; ctx.globalAlpha=0.55; ctx.lineWidth=1.2; ctx.beginPath();
+  const top=g.city.y, bot=g.city.y+g.city.h;
+  ctx.moveTo(g.node.x,g.node.y); ctx.lineTo(g.node.x, g.mobile? bot - g.city.h/g.rows/2 : top + g.city.h/g.rows/2);
+  ctx.moveTo(g.node.x,g.node.y); ctx.lineTo(g.node.x, bot - g.city.h/g.rows/2);
+  for(let r=0;r<g.rows;r++){ const yy=g.city.y+(r+.5)*g.city.h/g.rows; ctx.moveTo(g.node.x,yy); ctx.lineTo(g.feeders[r*g.cols].sub.x,yy); }
+  ctx.stroke(); ctx.globalAlpha=1;
+  // feeder substations
+  ctx.fillStyle=C.muted; g.feeders.forEach(f=>{ ctx.fillRect(f.sub.x-2.5,f.sub.y-2.5,5,5); });
+  // transmission line block -> node
+  ctx.strokeStyle=C.bulk; ctx.lineWidth=3.5; ctx.beginPath();
+  if(!g.mobile){ ctx.moveTo(g.bx+g.side+6, g.by+g.side/2); ctx.lineTo(g.node.x, g.node.y); }
+  else { ctx.moveTo(g.bx+g.side/2, g.by+g.side+6); ctx.lineTo(g.bx+g.side/2, g.node.y); ctx.lineTo(g.node.x,g.node.y); }
+  ctx.stroke();
+  ctx.fillStyle=C.bulk; ctx.beginPath(); ctx.arc(g.node.x,g.node.y,6,0,Math.PI*2); ctx.fill();
+  // labels
+  ctx.font='13px "Atkinson Hyperlegible", system-ui, sans-serif'; ctx.fillStyle=C.muted;
+  if(!g.mobile){ ctx.fillText('Transmission', g.bx+g.side+10, g.by+g.side/2-10); ctx.fillText('50 distribution feeders', g.city.x, g.city.y-8); }
+  else { ctx.textAlign='right'; ctx.fillText('Transmission', g.bx+g.side/2-8, (g.by+g.side+g.node.y)/2+4); ctx.textAlign='left'; ctx.textAlign='right'; ctx.fillText('50 distribution feeders', g.city.x+g.city.w, g.node.y-8); ctx.textAlign='left'; }
+  // ghost of the block site
+  const gp=Math.min(1,Math.max(0,A.T-0.2));
+  if(gp>0){ ctx.globalAlpha=gp; ctx.strokeStyle=C.bulk; ctx.lineWidth=1.2; ctx.setLineDash([5,4]); ctx.strokeRect(g.bx,g.by,g.side,g.side); ctx.setLineDash([]);
+    ctx.fillStyle=C.muted; ctx.textAlign='center'; ctx.fillText('300 MW site',g.bx+g.side/2,g.by+g.side/2-4); ctx.fillText('now on the streets',g.bx+g.side/2,g.by+g.side/2+13); ctx.textAlign='left'; ctx.globalAlpha=1; }
+  // dots
+  const c0=hex(C.bulk), c1=hex(C.unc);
+  const T=A.T;
+  for(const d of A.dots){
+    const p=ease(Math.min(1,Math.max(0,(T-d.delay)/0.5)));
+    const x=d.a.x+(d.b.x-d.a.x)*p, y=d.a.y+(d.b.y-d.a.y)*p;
+    const r=g.s*0.46+(g.rDot-g.s*0.46)*p;
+    ctx.fillStyle=`rgb(${Math.round(c0[0]+(c1[0]-c0[0])*p)},${Math.round(c0[1]+(c1[1]-c0[1])*p)},${Math.round(c0[2]+(c1[2]-c0[2])*p)})`;
+    if(r<1.6){ ctx.fillRect(x-r,y-r,2*r,2*r); } else { ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); }
+  }
+}
+const capText={
+  0:'One data center: 300 MW, one connection point, one date in a queue.',
+  1:'The same 300 MW from heat pumps and EVs: about 60,000 homes on about 50 feeders. Each feeder has its own limit.'
+};
+function setCapA(){ capA.innerHTML=capText[A.goal]+'<small>Each dot is 200 kilowatts (kW), about 40 homes. Illustrative numbers.</small>'; btnA.textContent=A.goal? 'Gather it into one block' : 'Spread it over the streets'; }
+function playA(goal){
+  A.goal=goal; setCapA();
+  if(reduce){ A.T=goal?1.08:0; drawA(); return; }
+  const from=A.T, to=goal?1.08:0, dur=1900, t0=performance.now();
+  cancelAnimationFrame(A.anim);
+  const step=now=>{ const k=Math.min(1,(now-t0)/dur); A.T=from+(to-from)*k; drawA(); if(k<1) A.anim=requestAnimationFrame(step); };
+  A.anim=requestAnimationFrame(step);
+}
+btnA.addEventListener('click',()=>playA(A.goal?0:1));
+let playedA=false;
+new IntersectionObserver((es,ob)=>{ es.forEach(e=>{ if(e.isIntersecting && !playedA && !reduce){ playedA=true; setTimeout(()=>{ if(A.goal===0) playA(1); },1100); ob.disconnect(); } }); },{threshold:0.4}).observe(cA);
+
+/* ---------- Feeder field ---------- */
+const ARCH=[
+  {name:'Urban core',      b:[.55,.93], g:[.20,.60], f:[.30,.45]},
+  {name:'Suburban, dense', b:[.48,.88], g:[.35,.90], f:[.30,.45]},
+  {name:'Suburban, sparse',b:[.35,.75], g:[.50,1.10],f:[.30,.50]},
+  {name:'Exurban',         b:[.30,.70], g:[.55,1.40],f:[.25,.40]}
+];
+const REG={cold:{g:1.3,f:0.55,note:'Cold winters: heat pumps add a long winter peak. Pre-heating lasts a few hours, so flexibility removes less of it.'},
+           mild:{g:0.9,f:1.2,note:'Mild winters: EV charging sets most of the new peak. Managed charging moves much of it into the night.'}};
+const rB=mulberry32(7); const FEED=[];
+ARCH.forEach((a,ai)=>{ for(let k=0;k<12;k++){ const L=r=>r[0]+rB()*(r[1]-r[0]); FEED.push({a:ai,b:L(a.b),g:L(a.g),f:L(a.f)}); } });
+let reg='cold', lvl=0.30;
+const VMAX=1.7;
+function params(fd){ const m=REG[reg]; return {b:fd.b,g:fd.g*m.g,f:Math.min(0.6,fd.f*m.f)}; }
+function state(p,l){ const u=p.b+l*p.g, m=p.b+l*p.g*(1-p.f); return u<=1?'ok':(m<=1?'flex':'wire'); }
+function avgParams(){ const ps=FEED.map(params); const n=ps.length; return {b:ps.reduce((s,p)=>s+p.b,0)/n, g:ps.reduce((s,p)=>s+p.g,0)/n, f:ps.reduce((s,p)=>s+p.f,0)/n}; }
+function tileSVG(){ return `<svg viewBox="0 0 40 70" aria-hidden="true"><rect class="rb" x="9" width="22" fill="var(--ghost)"/><rect class="ra" x="9" width="22" fill="var(--unc)"/><rect class="rf" x="9" width="22" fill="var(--feed)"/><line x1="4" x2="36" class="lim" stroke="var(--ink)" stroke-width="1.6" stroke-dasharray="3 2"/></svg>`; }
+const yS=v=>66-Math.min(VMAX,v)/VMAX*62;
+function paintTile(el,p,l){
+  const u=p.b+l*p.g, fl=l*p.g*p.f;
+  const rb=el.querySelector('.rb'), ra=el.querySelector('.ra'), rf=el.querySelector('.rf'), li=el.querySelector('.lim');
+  rb.setAttribute('y',yS(p.b)); rb.setAttribute('height',66-yS(p.b));
+  ra.setAttribute('y',yS(u)); ra.setAttribute('height',Math.max(0,yS(p.b)-yS(u)));
+  rf.setAttribute('y',yS(u)); rf.setAttribute('height',Math.max(0,yS(u-fl)-yS(u)));
+  li.setAttribute('y1',yS(1)); li.setAttribute('y2',yS(1));
+  el.dataset.s=state(p,l);
+}
+const field=document.getElementById('field');
+field.innerHTML=ARCH.map((a,ai)=>`<div class="arow"><span>${a.name}</span><div class="tiles">${FEED.map((f,i)=>f.a===ai?`<div class="tile" data-i="${i}">${tileSVG()}</div>`:'').join('')}</div></div>`).join('');
+const avgTile=document.getElementById('avgTile'); avgTile.innerHTML=tileSVG();
+const tiles=[...field.querySelectorAll('.tile')];
+function updateB(){
+  const l=lvl, cnt={ok:0,flex:0,wire:0};
+  tiles.forEach(t=>{ const p=params(FEED[+t.dataset.i]); paintTile(t,p,l); cnt[t.dataset.s]++; });
+  const ap=avgParams(); paintTile(avgTile,ap,l); const as=avgTile.dataset.s;
+  document.getElementById('counts').innerHTML=`<span class="c-ok"><b>${cnt.ok}</b> inside the limit</span><span class="c-flex"><b>${cnt.flex}</b> flexibility is enough</span><span class="c-wire"><b>${cnt.wire}</b> need new wires</span>`;
+  let t;
+  if(l===0) t='No new load yet. Every feeder is inside its limit.';
+  else if(as==='ok' && cnt.wire>0) t=`The average feeder is fine. ${cnt.wire} of 48 real feeders already need new wires.`;
+  else if(as==='ok' && cnt.flex>0) t=`The average feeder is fine. ${cnt.flex} of 48 real feeders already depend on flexibility.`;
+  else if(as==='ok') t='The average feeder is fine, and so is every real feeder.';
+  else if(as==='flex') t=`The average feeder says flexibility is enough. ${cnt.wire} of 48 real feeders need new wires, and ${cnt.ok} need nothing.`;
+  else t=`The average feeder says new wires. ${cnt.ok+cnt.flex} of 48 real feeders do not need them.`;
+  document.getElementById('readB').textContent=t;
+  document.getElementById('adoptOut').textContent=Math.round(l*100)+'%';
+  document.getElementById('regionNote').textContent=REG[reg].note;
+  drawPlans();
+}
+document.getElementById('adopt').addEventListener('input',e=>{ lvl=+e.target.value/100; updateB(); });
+document.querySelectorAll('[data-reg]').forEach(b=>b.addEventListener('click',()=>{ reg=b.dataset.reg; document.querySelectorAll('[data-reg]').forEach(x=>x.setAttribute('aria-pressed',x===b)); updateB(); }));
+
+/* ---------- Futures ---------- */
+const cC=document.getElementById('cC'); const HEAD=650, Y0=2025, Y1=2050, YMAX=1500;
+const rC=mulberry32(23); const FUT=[];
+function sig(t,m,w){ return 1/(1+Math.exp(-(t-m)/w)); }
+function makeFuture(){
+  const Smax=200+rC()*400, m=2030+rC()*16, w=2.5+rC()*2.5, nb=Math.floor(rC()*4);
+  const blocks=[]; for(let k=0;k<nb;k++) blocks.push({y:2026+Math.floor(rC()*20), mw:[100,200,300][Math.floor(rC()*3)]});
+  const s0=sig(Y0,m,w); const pts=[];
+  for(let y=Y0;y<=Y1;y++){ const st=Smax*(sig(y,m,w)-s0)/(1-s0); const bl=blocks.filter(b=>b.y<=y).reduce((a,b)=>a+b.mw,0); pts.push({y,st,bl,tot:st+bl}); }
+  const cross=pts.find(p=>p.tot>HEAD);
+  return {pts,cross:cross?cross.y:null};
+}
+for(let i=0;i<14;i++) FUT.push(makeFuture());
+function drawC(){
+  const {ctx,w,h}=setupCanvas(cC,cC.clientWidth<480?300:340);
+  const L=44,R=12,T=14,B=30, pw=w-L-R, ph=h-T-B;
+  const X=y=>L+(y-Y0)/(Y1-Y0)*pw, Y=v=>T+ph-v/YMAX*ph;
+  ctx.font='12px "Atkinson Hyperlegible", system-ui, sans-serif';
+  ctx.strokeStyle=C.line; ctx.fillStyle=C.muted; ctx.lineWidth=1;
+  for(let v=0;v<=YMAX;v+=500){ ctx.beginPath(); ctx.moveTo(L,Y(v)); ctx.lineTo(w-R,Y(v)); ctx.stroke(); ctx.fillText(v.toLocaleString('en-US'),4,Y(v)+4); }
+  [2025,2030,2035,2040,2045,2050].forEach(y=>ctx.fillText(y,Math.min(X(y)-14,w-R-30),h-10));
+  ctx.fillText('Added peak, MW',L+4,T+10);
+  const last=FUT[FUT.length-1];
+  // faint futures
+  ctx.strokeStyle=C.ink; ctx.globalAlpha=Math.max(0.08,Math.min(0.28,4/FUT.length)); ctx.lineWidth=1.2;
+  FUT.slice(0,-1).forEach(f=>{ ctx.beginPath(); f.pts.forEach((p,i)=>{ const x=X(p.y), y=Y(p.tot); if(i===0) ctx.moveTo(x,y); else { ctx.lineTo(x,Y(f.pts[i-1].tot)); ctx.lineTo(x,y);} }); ctx.stroke(); });
+  ctx.globalAlpha=1;
+  // latest: street area + block area
+  ctx.fillStyle=C.unc; ctx.globalAlpha=0.45; ctx.beginPath(); ctx.moveTo(X(Y0),Y(0)); last.pts.forEach(p=>ctx.lineTo(X(p.y),Y(p.st))); ctx.lineTo(X(Y1),Y(0)); ctx.closePath(); ctx.fill();
+  ctx.fillStyle=C.bulk; ctx.globalAlpha=0.8; ctx.beginPath();
+  last.pts.forEach((p,i)=>{ const x=X(p.y); if(i===0) ctx.moveTo(x,Y(p.tot)); else { ctx.lineTo(x,Y(last.pts[i-1].tot)); ctx.lineTo(x,Y(p.tot)); } });
+  for(let i=last.pts.length-1;i>=0;i--){ ctx.lineTo(X(last.pts[i].y),Y(last.pts[i].st)); }
+  ctx.closePath(); ctx.fill(); ctx.globalAlpha=1;
+  ctx.strokeStyle=C.ink; ctx.lineWidth=2.4; ctx.beginPath();
+  last.pts.forEach((p,i)=>{ const x=X(p.y), y=Y(p.tot); if(i===0) ctx.moveTo(x,y); else { ctx.lineTo(x,Y(last.pts[i-1].tot)); ctx.lineTo(x,y);} }); ctx.stroke();
+  // headroom
+  ctx.strokeStyle=C.build; ctx.lineWidth=2; ctx.setLineDash([6,4]); ctx.beginPath(); ctx.moveTo(L,Y(HEAD)); ctx.lineTo(w-R,Y(HEAD)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle=C.build; ctx.fillText('Regional headroom, 650 MW',L+6,Y(HEAD)-6);
+  // legend
+  ctx.fillStyle=C.unc; ctx.fillRect(w-R-170,T+2,10,10); ctx.fillStyle=C.muted; ctx.fillText('Street load',w-R-155,T+11);
+  ctx.fillStyle=C.bulk; ctx.fillRect(w-R-85,T+2,10,10); ctx.fillStyle=C.muted; ctx.fillText('Large loads',w-R-70,T+11);
+  const n=FUT.length, k35=FUT.filter(f=>f.cross&&f.cross<=2035).length, k50=FUT.filter(f=>f.cross).length;
+  const lt = last.cross ? `The thick line crosses the headroom in ${last.cross}.` : 'The thick line stays under the headroom to 2050.';
+  document.getElementById('readC').textContent=`${n} futures drawn. ${k35} cross the headroom by 2035, ${k50} by 2050. ${lt}`;
+}
+document.getElementById('btnC1').addEventListener('click',()=>{ FUT.push(makeFuture()); drawC(); });
+document.getElementById('btnC20').addEventListener('click',()=>{ for(let i=0;i<20;i++) FUT.push(makeFuture()); drawC(); });
+
+/* facts */
+function facts(){
+  const ab=document.getElementById('fAB'), us=document.getElementById('fUS'); const W=400;
+  const sc=v=>v/16000*(W-10);
+  ab.innerHTML=`<rect x="0" y="6" width="${sc(16000)}" height="18" rx="3" fill="var(--bulk)"/><text x="6" y="19" fill="var(--bg)" font-size="12">Requested: more than 16,000 MW</text>
+  <rect x="0" y="36" width="${sc(1200)}" height="18" rx="3" fill="var(--build)"/><text x="${sc(1200)+8}" y="49" fill="var(--ink)" font-size="12">Interim limit: 1,200 MW</text>`;
+  const sp=v=>v/12*(W-60);
+  us.innerHTML=`<text x="0" y="18" fill="var(--muted)" font-size="12">2023</text><rect x="40" y="7" width="${sp(4.4)}" height="16" rx="3" fill="var(--bulk)"/><text x="${40+sp(4.4)+6}" y="19" fill="var(--ink)" font-size="12">4.4%</text>
+  <text x="0" y="50" fill="var(--muted)" font-size="12">2028</text><rect x="40" y="39" width="${sp(6.7)}" height="16" rx="3" fill="var(--bulk)" opacity="0.35"/>
+  <rect x="${40+sp(6.7)}" y="39" width="${sp(12)-sp(6.7)}" height="16" rx="3" fill="var(--unc)"/><text x="${40+sp(6.7)+6}" y="51" fill="var(--bg)" font-size="12">6.7% to 12%</text>`;
+}
+
+/* ---------- Upstream capacity ---------- */
+let flexOn=false, dcOn=true;
+function updateD(){
+  const S=1200, pct=v=>v/S*100;
+  const ex=520, st=240, fr=80, dc=300, cap=1000;
+  const stEnd = ex + (flexOn? st-fr : st);
+  const set=(id,a,b)=>{ const e=document.getElementById(id); e.style.left=pct(a)+'%'; e.style.width=Math.max(0,pct(b-a))+'%'; };
+  set('hExist',0,ex); set('hStreet',ex,stEnd); set('hDC',stEnd, dcOn? stEnd+dc : stEnd);
+  const fe=document.getElementById('hFreed');
+  fe.style.display=flexOn?'block':'none'; set('hFreed',stEnd,ex+st);
+  fe.style.zIndex = dcOn ? 2 : '';
+  fe.style.background = dcOn ? 'transparent' : 'repeating-linear-gradient(45deg,var(--feed) 0 3px,transparent 3px 8px)';
+  document.getElementById('hCap').style.left=pct(cap)+'%';
+  const load = stEnd + (dcOn? dc : 0);
+  let t;
+  if(!dcOn) t = flexOn ? `Load is ${load} MW. Flexibility frees 80 MW of upstream capacity for other loads.` : `Load is ${load} MW. There is room for ${cap-load} MW more.`;
+  else if(load>cap) t=`Load is ${load.toLocaleString('en-US')} MW, ${load-cap} MW over the capacity. The plan must build upstream.`;
+  else t=`Load is ${load} MW. The data center uses the space that flexibility freed, with ${cap-load} MW to spare.`;
+  document.getElementById('readD').textContent=t;
+}
+document.querySelectorAll('[data-flex]').forEach(b=>b.addEventListener('click',()=>{ flexOn=b.dataset.flex==='1'; document.querySelectorAll('[data-flex]').forEach(x=>x.setAttribute('aria-pressed',x===b)); updateD(); }));
+document.querySelectorAll('[data-dc]').forEach(b=>b.addEventListener('click',()=>{ dcOn=b.dataset.dc==='1'; document.querySelectorAll('[data-dc]').forEach(x=>x.setAttribute('aria-pressed',x===b)); updateD(); }));
+
+/* ---------- Three plans ---------- */
+function drawPlans(){
+  const l=0.45, cols=12, sz=16, gap=2.3;
+  const col={ok:'var(--ghost)',flex:'var(--feed)',wire:'var(--build)'};
+  const save=reg; reg='cold';
+  const states=FEED.map(f=>state(params(f),l)); const as=state(avgParams(),l);
+  reg=save;
+  const grid=fn=>FEED.map((f,i)=>{ const x=(i%cols)*(sz+gap), y=Math.floor(i/cols)*(sz+gap)+(Math.floor(i/cols))*4; return fn(i,x,y); }).join('');
+  document.getElementById('pBlind').innerHTML=grid((i,x,y)=>`<rect x="${x+.5}" y="${y+.5}" width="${sz-1}" height="${sz-1}" rx="2" fill="none" stroke="var(--line)" stroke-dasharray="2 2"/>`);
+  document.getElementById('pFlat').innerHTML=grid((i,x,y)=>`<rect x="${x}" y="${y}" width="${sz}" height="${sz}" rx="2" fill="${col[as]}"/>`);
+  document.getElementById('pInf').innerHTML=grid((i,x,y)=>`<rect x="${x}" y="${y}" width="${sz}" height="${sz}" rx="2" fill="${col[states[i]]}"/>`);
+}
+
+/* ---------- boot, resize, theme ---------- */
+function all(){ readColors(); layoutA(); updateB(); drawC(); facts(); updateD(); }
+all();
+let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ layoutA(); drawC(); },120); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{ readColors(); drawA(); drawC(); });
+if(document.fonts) document.fonts.ready.then(()=>{ drawA(); drawC(); });
+})();
+</script>
+</body>
+</html>

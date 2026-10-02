@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From buildings to bulk: the chapter concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1F3; --panel:#F8FAFB; --ink:#1C2B45; --muted:#56667A; --line:#C6D0D8; --soft:#DDE4E9;
+  --c1:#157A6E; --c2:#C4741F; --c3:#3A5BA0; --warn:#7A1E2E;
+  --font:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#13202F; --panel:#182838; --ink:#E4EAF1; --muted:#9BAABA; --line:#2E4157; --soft:#22344A;
+    --c1:#3FB9A7; --c2:#E89B4E; --c3:#93B6E3; --warn:#D56B7C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#13202F; --panel:#182838; --ink:#E4EAF1; --muted:#9BAABA; --line:#2E4157; --soft:#22344A;
+  --c1:#3FB9A7; --c2:#E89B4E; --c3:#93B6E3; --warn:#D56B7C;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font); font-size:17px; line-height:1.5}
+.wrap{max-width:1180px; margin:0 auto; padding:24px 20px 48px}
+header h1{font-size:1.7rem; line-height:1.15; margin:0 0 6px}
+header p{margin:0; color:var(--muted); max-width:70ch}
+.stance{margin:22px 0 4px; font-size:0.95rem; color:var(--muted)}
+.thread{margin:0 0 8px; overflow-x:auto}
+.thread svg{display:block; width:100%; max-width:760px; height:auto}
+.node rect{fill:var(--panel); stroke:var(--line); stroke-width:1.5}
+.node{cursor:pointer}
+.node text{fill:var(--ink); font-family:var(--font)}
+.node .t{font-size:21px; font-weight:700}
+.node .s{font-size:16px; fill:var(--muted)}
+.node.on rect{stroke-width:3.5}
+.node:focus{outline:none}
+.node:focus-visible rect{stroke-dasharray:4 3}
+.edge{fill:none; stroke-width:2.5}
+.elab{font-family:var(--font); font-size:16px; fill:var(--ink)}
+.none{fill:var(--muted); font-size:16px; font-style:italic}
+.tabs{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 18px}
+.tabs button{font:inherit; font-size:0.95rem; background:transparent; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:6px 14px; cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+button:focus-visible, input:focus-visible{outline:2px solid var(--c2); outline-offset:2px}
+.card{background:var(--panel); border:1px solid var(--line); border-left:6px solid var(--cc); border-radius:4px 10px 10px 4px; padding:22px 24px 26px; margin:0 0 22px}
+.card[hidden]{display:none}
+.card .kicker{font-size:0.95rem; color:var(--cc); font-weight:700; margin:0}
+.card h2{font-size:1.45rem; line-height:1.2; margin:4px 0 14px; max-width:40ch}
+.idea{font-size:1.12rem; line-height:1.55; max-width:62ch; margin:0 0 18px}
+.grid{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:28px; align-items:start}
+.toy{border:1px solid var(--line); border-radius:8px; padding:14px 14px 12px; background:var(--bg)}
+.toy h3{font-size:1rem; margin:0 0 2px}
+.toy .how{font-size:0.88rem; color:var(--muted); margin:0 0 8px}
+.toy svg{display:block; width:100%; height:auto}
+.ctl{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; margin:8px 0 4px; font-size:0.9rem}
+.ctl > span{color:var(--muted)}
+.seg{display:inline-flex; flex-wrap:wrap; border:1px solid var(--line); border-radius:8px; overflow:hidden}
+.seg button{font:inherit; font-size:0.86rem; background:transparent; color:var(--ink); border:0; border-right:1px solid var(--line); padding:5px 10px; cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--bg)}
+input[type=range]{width:min(260px,100%); accent-color:var(--cc)}
+label.chk{display:inline-flex; gap:6px; align-items:center; cursor:pointer}
+.read{font-size:0.95rem; margin:8px 0 0; min-height:3em}
+.synth{font-size:0.78rem; color:var(--muted); margin:6px 0 0}
+dl.f{margin:0}
+dl.f dt{font-weight:700; font-size:0.95rem; margin:14px 0 2px}
+dl.f dt:first-child{margin-top:0}
+dl.f dd{margin:0; max-width:62ch; font-size:0.97rem}
+.math{font-size:1.02rem; margin:6px 0; white-space:nowrap; overflow-x:auto}
+.ax{stroke:var(--muted); stroke-width:1}
+.axt{fill:var(--muted); font-family:var(--font); font-size:12px}
+.lt{font-family:var(--font); font-size:12.5px}
+footer{margin-top:30px; border-top:1px solid var(--line); padding-top:18px; font-size:0.92rem}
+footer h2{font-size:1.05rem; margin:0 0 8px}
+footer dl{display:grid; grid-template-columns:max-content 1fr; gap:4px 14px; margin:0 0 22px}
+footer dt{font-weight:700}
+footer dd{margin:0; color:var(--ink)}
+footer ul{padding-left:18px; margin:0}
+footer li{margin:0 0 4px; overflow-wrap:anywhere}
+footer a{color:var(--ink)}
+.nojs{font-size:0.85rem; color:var(--muted)}
+@media (max-width: 860px){
+  .grid{grid-template-columns:1fr}
+  .wrap{padding:18px 14px 40px}
+  footer dl{grid-template-columns:1fr}
+  footer dt{margin-top:6px}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>From buildings to bulk: the chapter concepts</h1>
+  <p>Each chapter's idea, before any procedure. Every number on this page is invented to show a mechanism. None is a result.</p>
+</header>
+
+<p class="stance">All three chapters use exploratory modelling (Bankes, 1993). Chapter 1 is the trunk.</p>
+<div class="thread">
+<svg viewBox="0 0 700 300" role="group" aria-label="How the chapters connect">
+  <defs>
+    <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--c1)"/></marker>
+  </defs>
+  <path class="edge" d="M240,128 C320,100 360,70 438,62" stroke="var(--c1)" marker-end="url(#ah1)"/>
+  <path class="edge" d="M240,172 C320,200 360,230 438,238" stroke="var(--c1)" marker-end="url(#ah1)"/>
+  <text class="elab" x="232" y="98" text-anchor="end">feeders and cost curves</text>
+  <text class="elab" x="232" y="214" text-anchor="end">feeder surrogate</text>
+  <line x1="560" y1="96" x2="560" y2="204" stroke="var(--muted)" stroke-width="2" stroke-dasharray="3 7"/>
+  <text class="none" x="574" y="155">none</text>
+  <g class="node" data-ch="1" tabindex="0" role="button" aria-label="Open Chapter 1">
+    <rect x="20" y="112" width="220" height="76" rx="8" style="stroke:var(--c1)"/>
+    <text class="t" x="38" y="144">Chapter 1</text><text class="s" x="38" y="170">varies feeders</text>
+  </g>
+  <g class="node" data-ch="2" tabindex="0" role="button" aria-label="Open Chapter 2">
+    <rect x="440" y="20" width="240" height="76" rx="8" style="stroke:var(--c2)"/>
+    <text class="t" x="458" y="52">Chapter 2</text><text class="s" x="458" y="78">varies futures</text>
+  </g>
+  <g class="node" data-ch="3" tabindex="0" role="button" aria-label="Open Chapter 3">
+    <rect x="440" y="204" width="240" height="76" rx="8" style="stroke:var(--c3)"/>
+    <text class="t" x="458" y="236">Chapter 3</text><text class="s" x="458" y="262">varies settings and inputs</text>
+  </g>
+</svg>
+</div>
+<p class="stance" style="margin-top:0">Chapters 1 and 2 are simulation. Chapter 3 adds the one optimization.</p>
+
+<div class="tabs" role="tablist" aria-label="Chapters" hidden>
+  <button role="tab" data-ch="1" aria-selected="true">Chapter 1</button>
+  <button role="tab" data-ch="2" aria-selected="false">Chapter 2</button>
+  <button role="tab" data-ch="3" aria-selected="false">Chapter 3</button>
+</div>
+
+<!-- Chapter 1 -->
+<article class="card" id="card1" role="tabpanel" style="--cc:var(--c1)">
+  <p class="kicker">Chapter 1</p>
+  <h2>When is flexibility cheaper than reinforcing a feeder, and what decides it?</h2>
+  <p class="idea">A feeder absorbs new load up to a point, the onset load. Past it, the utility either reinforces equipment or uses flexibility to keep the peak down. Chapter 1 measures which is cheaper across many feeders, and tests whether climate and adoption decide it more than feeder layout.</p>
+  <div class="grid">
+    <div class="toy">
+      <h3>Cost of serving new load on one feeder</h3>
+      <p class="how">Move the load. Change the peak and the upgrade to see the cheaper option flip. Flexibility stops where its peak relief runs out.</p>
+      <svg id="t1" viewBox="0 0 520 300" aria-label="Cost against feeder load for reinforcement and flexibility"></svg>
+      <div class="ctl"><span>Feeder load</span><input id="t1p" type="range" min="0" max="10" step="0.1" value="6" aria-label="Feeder load in MW"><b id="t1pv">6.0 MW</b></div>
+      <div class="ctl"><span>Peak shape</span><div class="seg" data-g="t1peak"><button data-v="short" aria-pressed="true">Short evening peak</button><button data-v="long" aria-pressed="false">Long winter peak</button></div></div>
+      <div class="ctl"><span>Upgrade needed</span><div class="seg" data-g="t1up"><button data-v="swap" aria-pressed="false">Transformer swap</button><button data-v="cond" aria-pressed="true">New conductor</button></div></div>
+      <p class="read" id="t1r" aria-live="polite"><span class="nojs">Turn on scripts to use this example.</span></p>
+      <p class="synth">Synthetic values. Peak shape stands for climate and adoption. Upgrade type stands for feeder layout.</p>
+    </div>
+    <dl class="f">
+      <dt>Method family</dt>
+      <dd>Cost-benefit analysis of planning alternatives. Each alternative is sized by the violations it resolves and compared by net present value (Quirós-Tortós and Ochoa, 2021).</dd>
+      <dt>Why it could go either way</dt>
+      <dd>Flexibility suits short peaks just past the onset load. Reinforcement suits long or large overloads, and feeders where upgrades are cheap. Peak length and overload size follow climate and adoption. Upgrade cost follows feeder layout.</dd>
+      <dt>What varies, and what is fixed</dt>
+      <dd>Feeders vary in layout and climate-demand zone. Adoption level rises. Unit costs and the rules for each option stay fixed.</dd>
+      <dt>What comes in, and what goes out</dt>
+      <dd>Building profiles come in, coupled to each feeder by the methods paper. Feeders and cost curves go to Chapter 2. The feeder surrogate goes to Chapter 3: onset load, cost adder and peak relief.</dd>
+      <dt>What would show it wrong</dt>
+      <dd>Feeder archetype explains more of the cost gap than zone and adoption level do. Then layout decides the ranking. Chapter 3's fixed archetype shares would then carry more weight.</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- Chapter 2 -->
+<article class="card" id="card2" role="tabpanel" style="--cc:var(--c2)">
+  <p class="kicker">Chapter 2</p>
+  <h2>Which conditions stress feeders, and which pathway holds up across futures?</h2>
+  <p class="idea">Nobody knows how adoption will unfold. Chapter 2 runs many futures without assigning them probabilities. It finds which conditions cause stress, and which pathway, reinforcement or flexibility, carries the least regret.</p>
+  <div class="grid">
+    <div class="toy">
+      <h3>Three hundred futures on one feeder</h3>
+      <p class="how">Stress view shows where stress concentrates. Regret view shows how each pathway fares, future by future.</p>
+      <div class="ctl"><span>View</span><div class="seg" data-g="t2view"><button data-v="stress" aria-pressed="true">Stress</button><button data-v="regret" aria-pressed="false">Regret</button></div></div>
+      <svg id="t2" viewBox="0 0 520 300" aria-label="Futures plotted by unmanaged heating share and EV adoption"></svg>
+      <div class="ctl" id="t2pw"><span>Pathway</span><div class="seg" data-g="t2path"><button data-v="R" aria-pressed="true">Reinforce</button><button data-v="F" aria-pressed="false">Flex</button><button data-v="H" aria-pressed="false">Hybrid</button></div></div>
+      <div class="ctl"><span>Criterion</span><div class="seg" data-g="t2crit"><button data-v="max" aria-pressed="true">Minimax</button><button data-v="p90" aria-pressed="false">90th percentile</button><button data-v="p50" aria-pressed="false">Median</button></div>
+        <label class="chk"><input type="checkbox" id="t2cost"> Vary unit cost</label></div>
+      <svg id="t2b" viewBox="0 0 520 120" aria-label="Regret of each pathway under the chosen criterion"></svg>
+      <p class="read" id="t2r" aria-live="polite"><span class="nojs">Turn on scripts to use this example.</span></p>
+      <p class="synth">Synthetic values. Each criterion can crown a different pathway, which is why the criterion is fixed before the runs.</p>
+    </div>
+    <dl class="f">
+      <dt>Why it belongs</dt>
+      <dd>Chapter 2 tests the answer of Chapter 1. It asks whether the ranking of reinforcement and flexibility holds across futures with no assigned probabilities. It samples many uncertain factors together, which Chapters 1 and 3 set at fixed levels. PRIM finds, from the runs, which conditions and lever ranges cause stress. It also tells distribution planners which pathway has the least regret.</dd>
+      <dt>Method family</dt>
+      <dd>The analytic steps of robust decision making (Lempert et al., 2003). The steps are XLRM framing, uniform sampling within bounds, and scenario discovery with PRIM (Friedman and Fisher, 1999; Bryant and Lempert, 2010). The last step is regret over pathways (Savage, 1951). Stakeholder deliberation is outside the thesis.</dd>
+      <dt>Regret</dt>
+      <dd>Regret is how much more a pathway costs in one future than the best pathway in that future.
+        <div class="math"><i>R</i><sub><i>s,i</i></sub> = <i>C</i><sub><i>s,i</i></sub> − min<sub><i>s′</i></sub> <i>C</i><sub><i>s′,i</i></sub></div>
+        The criterion that ranks pathways by regret is chosen before the runs.</dd>
+      <dt>Why it could go either way</dt>
+      <dd>Flexibility may hold in most futures and fail in a few, such as fast unmanaged heating. Reinforcement costs more up front and has no such failure. The winner depends on how many futures fail, and how badly.</dd>
+      <dt>What varies, and what is fixed</dt>
+      <dd>Adoption, lever settings and unit costs vary within bounds, with no probabilities attached. The feeders come from Chapter 1 and stay fixed.</dd>
+      <dt>What comes in, and what goes out</dt>
+      <dd>Feeders and cost curves come in from Chapter 1. Stress regions go out as readable rules, with the least-regret pathway per feeder type. Nothing goes to Chapter 3.</dd>
+      <dt>What would show it wrong</dt>
+      <dd>Stress regions fail to hold on a fresh sample. If one pathway has the least regret everywhere, Chapter 1's ranking holds without the ensemble.</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- Chapter 3 -->
+<article class="card" id="card3" role="tabpanel" style="--cc:var(--c3)">
+  <p class="kicker">Chapter 3</p>
+  <h2>What does seeing feeders change in a national plan?</h2>
+  <p class="idea">National plans often treat distribution as free, or as one flat cost. Chapter 3 gives the national model each node's feeder costs and checks whether the plan changes. It changes only if those costs shift the balance between reinforcing, flexing and supplying from upstream.</p>
+  <div class="grid">
+    <div class="toy">
+      <h3>Where one node's plan spends to meet new peak</h3>
+      <p class="how">The dot splits the plan's spending three ways. The hollow ring is the blind plan. Reinforcement and upstream supply often go together; flexibility substitutes for both.</p>
+      <svg id="t3" viewBox="0 0 520 330" aria-label="Triangle of reinforcing, flexing and supplying from upstream"></svg>
+      <div class="ctl"><span>Setting</span><div class="seg" data-g="t3set"><button data-v="blind" aria-pressed="false">Blind</button><button data-v="flat" aria-pressed="false">Flat adder</button><button data-v="inf" aria-pressed="true">Feeder-informed</button></div></div>
+      <div class="ctl"><span>Node</span><div class="seg" data-g="t3node"><button data-v="early" aria-pressed="true">Onset load binds early</button><button data-v="room" aria-pressed="false">Ample headroom</button></div></div>
+      <div class="ctl"><span>Generation cost</span><div class="seg" data-g="t3gen"><button data-v="low" aria-pressed="true">Low</button><button data-v="high" aria-pressed="false">High</button></div></div>
+      <p class="read" id="t3r" aria-live="polite"><span class="nojs">Turn on scripts to use this example.</span></p>
+      <p class="synth">Synthetic values. The toy compares plan shifts. Chapter 3 makes the same comparison on total system cost.</p>
+    </div>
+    <dl class="f">
+      <dt>Method family</dt>
+      <dd>A one-way soft link carries feeder results to the national model (Chang et al., 2023). The substitution triangle says why the plan could change: it shows where the plan spends to meet new peak. With and without runs measure the change (Jacquier et al., 2025), extended to three settings. One optimization model is used in exploratory mode (Bankes, 1993). A fractional factorial and a materiality rule say how far the result holds (NIST/SEMATECH).</dd>
+      <dt>Why it could go either way</dt>
+      <dd>Feeder costs may be small next to generation and fuel. They may also tip the balance at nodes where the onset load binds early. Deane et al. (2012) and Jacquier et al. (2025) found that missing grid detail changed flexibility and curtailment.</dd>
+      <dt>What varies, and what is fixed</dt>
+      <dd>The setting varies: blind, flat-adder or feeder-informed. Standard national inputs vary between low and high values. The model and the archetype shares per node stay fixed.</dd>
+      <dt>What comes in, and what goes out</dt>
+      <dd>The feeder surrogate comes in from Chapter 1, per archetype, zone and adoption level. Nothing comes in from Chapter 2. The value of visibility and the value of detail go out, as build change and system cost difference.</dd>
+      <dt>What would show it wrong</dt>
+      <dd>Feeder detail moves total system cost less than standard national inputs, such as fuel cost and demand. Then a flat adder suffices for national planning.</dd>
+    </dl>
+  </div>
+</article>
+
+<footer>
+  <h2>Terms used on this page</h2>
+  <p class="nojs" style="margin:0 0 8px">The chapter that uses each term is in brackets.</p>
+  <dl>
+    <dt>Onset load</dt><dd>Feeder-head load at which the first thermal or voltage violation appears. (1, 3)</dd>
+    <dt>Reinforcement</dt><dd>New or larger equipment that removes violations. (1, 2)</dd>
+    <dt>Flexibility</dt><dd>DER and demand management that lower the peak, with no upgrades. (1, 2)</dd>
+    <dt>Peak relief</dt><dd>The MW of peak that full flexibility removes. Past it, flexibility alone runs out. (1, 3)</dd>
+    <dt>Cost gap</dt><dd>Net present cost of reinforcement minus that of flexibility, for one feeder. Positive means flexibility is cheaper. (1)</dd>
+    <dt>Future</dt><dd>One sampled set of uncertain inputs, with no probability attached. (2)</dd>
+    <dt>Pathway</dt><dd>One intervention plan, applied in every future. (2)</dd>
+    <dt>Hybrid</dt><dd>A pathway that uses flexibility first and reinforces for the rest. (2)</dd>
+    <dt>Regret</dt><dd>How much more a pathway costs in one future than the best pathway in that future. (2)</dd>
+    <dt>Stress region</dt><dd>A box of input ranges where stressed futures concentrate, found by PRIM. (2)</dd>
+    <dt>Setting</dt><dd>How the national model sees distribution: blind, flat-adder or feeder-informed. (3)</dd>
+    <dt>Substitution triangle</dt><dd>Where a node's plan spends to meet new peak: link reinforcement, flexibility behind the link, or upstream supply. Reinforcement and upstream supply often go together. Flexibility substitutes for both. (3)</dd>
+    <dt>Materiality</dt><dd>Feeder detail matters if its cost effect is at least that of two of the four standard inputs. Preliminary. (3)</dd>
+  </dl>
+  <h2>Key references</h2>
+  <ul>
+    <li>Bankes, S. C. (1993). Exploratory modeling for policy analysis. Operations Research, 41(3), 435–449. <a href="https://doi.org/10.1287/opre.41.3.435">doi.org/10.1287/opre.41.3.435</a></li>
+    <li>Bryant, B. P., &amp; Lempert, R. J. (2010). Thinking inside the box. Technological Forecasting and Social Change, 77(1), 34–49.</li>
+    <li>Chang, M., et al. (2023). Energy, 265, 126335. <a href="https://doi.org/10.1016/j.energy.2022.126335">doi.org/10.1016/j.energy.2022.126335</a></li>
+    <li>Deane, J. P., et al. (2012). Energy, 42(1), 303–312. <a href="https://doi.org/10.1016/j.energy.2012.03.052">doi.org/10.1016/j.energy.2012.03.052</a></li>
+    <li>Friedman, J. H., &amp; Fisher, N. I. (1999). Bump hunting in high-dimensional data. Statistics and Computing, 9(2), 123–143.</li>
+    <li>Jacquier, C., et al. (2025). Energy Strategy Reviews, 58, 101688. <a href="https://doi.org/10.1016/j.esr.2025.101688">doi.org/10.1016/j.esr.2025.101688</a></li>
+    <li>Lempert, R. J., et al. (2003). Shaping the Next One Hundred Years. RAND.</li>
+    <li>NIST/SEMATECH e-Handbook of Statistical Methods, fractional factorial designs. <a href="https://itl.nist.gov/div898/handbook/pri/section3/pri334.htm">itl.nist.gov</a></li>
+    <li>Quirós-Tortós, J., &amp; Ochoa, L. F. (2021). Multi-year planning of LV networks with EVs. IET Generation, Transmission &amp; Distribution. <a href="https://doi.org/10.1049/gtd2.12034">doi.org/10.1049/gtd2.12034</a></li>
+    <li>Savage, L. J. (1951). The theory of statistical decision. Journal of the American Statistical Association, 46(253), 55–67.</li>
+  </ul>
+</footer>
+</div>
+
+<script>
+(function(){
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+function clear(s){while(s.firstChild)s.removeChild(s.firstChild);}
+const state={t1peak:'short',t1up:'cond',t2view:'stress',t2path:'R',t2crit:'max',t3set:'inf',t3node:'early',t3gen:'low'};
+const redraw={};
+
+/* tabs and thread */
+const tabs=document.querySelector('.tabs'); tabs.hidden=false;
+function show(ch){
+  [1,2,3].forEach(n=>{document.getElementById('card'+n).hidden=(n!==ch);});
+  document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',+b.dataset.ch===ch));
+  document.querySelectorAll('.node').forEach(g=>g.classList.toggle('on',+g.dataset.ch===ch));
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>show(+b.dataset.ch)));
+document.querySelectorAll('.node').forEach(g=>{
+  g.addEventListener('click',()=>show(+g.dataset.ch));
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();show(+g.dataset.ch);}});
+});
+document.querySelectorAll('.seg[data-g]').forEach(seg=>{
+  seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    state[seg.dataset.g]=b.dataset.v;
+    seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    const k=seg.dataset.g.slice(0,2); redraw[k]();
+  }));
+});
+
+/* Toy 1: cost against load */
+const t1=document.getElementById('t1'), t1p=document.getElementById('t1p');
+const PON=4, STEP=1.5;
+function costs(P){
+  const relief=state.t1peak==='short'?2.5:1.0, k=state.t1peak==='short'?0.45:1.1, unit=state.t1up==='swap'?0.9:2.4;
+  const R=P<=PON?0:Math.ceil((P-PON)/STEP-1e-9)*unit;
+  const F=P<=PON?0:(P<=PON+relief+1e-9?k*(P-PON):null);
+  return {R,F,relief};
+}
+redraw.t1=function(){
+  clear(t1); const W=520,H=300,L=48,Rm=14,T=16,B=40, xs=P=>L+P/10*(W-L-Rm), ys=c=>H-B-c/11*(H-T-B);
+  const {relief}=costs(5);
+  el('rect',{x:xs(PON),y:T,width:xs(PON+relief)-xs(PON),height:H-T-B,fill:'var(--soft)'},t1);
+  el('text',{x:(xs(PON)+xs(PON+relief))/2,y:T+14,'text-anchor':'middle',class:'axt'},t1,'peak relief');
+  el('line',{x1:L,y1:H-B,x2:W-Rm,y2:H-B,class:'ax'},t1); el('line',{x1:L,y1:T,x2:L,y2:H-B,class:'ax'},t1);
+  [0,2,4,6,8,10].forEach(v=>el('text',{x:xs(v),y:H-B+16,'text-anchor':'middle',class:'axt'},t1,v));
+  el('text',{x:(W+L)/2,y:H-6,'text-anchor':'middle',class:'axt'},t1,'Feeder-head load (MW)');
+  el('text',{x:14,y:(H-B+T)/2,'text-anchor':'middle',class:'axt',transform:`rotate(-90 14 ${(H-B+T)/2})`},t1,'Cost (M$, NPV)');
+  el('line',{x1:xs(PON),y1:T,x2:xs(PON),y2:H-B,stroke:'var(--muted)','stroke-dasharray':'4 4'},t1);
+  el('text',{x:xs(PON)-6,y:H-B-8,'text-anchor':'end',class:'axt'},t1,'onset load');
+  let dR='',dF='';
+  for(let P=0;P<=10.0001;P+=0.02){const c=costs(P);dR+=(P?'L':'M')+xs(P).toFixed(1)+','+ys(c.R).toFixed(1);if(c.F!==null)dF+=(dF?'L':'M')+xs(P).toFixed(1)+','+ys(c.F).toFixed(1);}
+  const end=PON+relief, fEnd=costs(end).F;
+  el('path',{d:dR,fill:'none',stroke:'var(--warn)','stroke-width':2.5},t1);
+  el('path',{d:dF,fill:'none',stroke:'var(--c1)','stroke-width':2.5},t1);
+  el('text',{x:xs(9.6),y:ys(costs(9.6).R)-8,'text-anchor':'end',class:'lt',fill:'var(--warn)'},t1,'Reinforce');
+  el('circle',{cx:xs(end),cy:ys(fEnd),r:4,fill:'var(--bg)',stroke:'var(--c1)','stroke-width':2},t1);
+  el('text',{x:xs(end)+8,y:ys(fEnd)+4,class:'lt',fill:'var(--c1)'},t1,'Flex runs out');
+  const P=+t1p.value, c=costs(P);
+  el('line',{x1:xs(P),y1:T,x2:xs(P),y2:H-B,stroke:'var(--ink)','stroke-width':1.5},t1);
+  el('circle',{cx:xs(P),cy:ys(c.R),r:5,fill:'var(--warn)'},t1); if(c.F!==null) el('circle',{cx:xs(P),cy:ys(c.F),r:5,fill:'var(--c1)'},t1);
+  document.getElementById('t1pv').textContent=P.toFixed(1)+' MW';
+  let msg;
+  if(P<=PON) msg=`Below the onset load. Neither option is needed, so the cost gap is zero.`;
+  else if(c.F===null) msg=`Reinforcement ${c.R.toFixed(1)}. Flexibility alone cannot serve this load: it is past peak relief. Cases like this make up the limit of Flex.`;
+  else if(Math.abs(c.R-c.F)<0.05) msg=`Reinforcement ${c.R.toFixed(1)}, flexibility ${c.F.toFixed(1)}. The two cost about the same here.`;
+  else {const gap=c.R-c.F; msg=`Reinforcement ${c.R.toFixed(1)}, flexibility ${c.F.toFixed(1)}. Cost gap ${gap>0?'+':''}${gap.toFixed(1)}: ${gap>0?'flexibility':'reinforcement'} is cheaper.`;}
+  document.getElementById('t1r').textContent=msg;
+};
+t1p.addEventListener('input',redraw.t1);
+
+/* Toy 2: futures, stress and regret */
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const rnd=mulberry(7), N=300, D=[];
+for(let i=0;i<N;i++){const u=rnd(),e=rnd(),c=0.7+0.6*rnd(),n=rnd()+rnd()+rnd()-1.5;D.push({u,e,c,s:0.95*u+0.55*e+0.12*n,L:0.6*u+0.4*e});}
+const STRESS=0.95;
+function prim(){ /* peel 5% from one side at a time, keep the densest box that still covers 70% of stressed futures */
+  let box={u0:0,u1:1,e0:0,e1:1}, best=null; const tot=D.filter(d=>d.s>STRESS).length, inB=(d,b)=>d.u>=b.u0&&d.u<=b.u1&&d.e>=b.e0&&d.e<=b.e1;
+  const stats=b=>{const ins=D.filter(d=>inB(d,b)),hit=ins.filter(d=>d.s>STRESS).length;return {n:ins.length,cov:hit/tot,den:ins.length?hit/ins.length:0};};
+  while(stats(box).n>0.1*N){
+    const ins=D.filter(d=>inB(d,box)), q=(a,p)=>{const v=a.slice().sort((x,y)=>x-y);return v[Math.floor(p*(v.length-1))];};
+    const us=ins.map(d=>d.u), es=ins.map(d=>d.e);
+    const cands=[{...box,u0:q(us,0.05)},{...box,u1:q(us,0.95)},{...box,e0:q(es,0.05)},{...box,e1:q(es,0.95)}];
+    let pick=null,pd=-1; cands.forEach(c=>{const st=stats(c); if(st.n<ins.length&&st.den>pd){pd=st.den;pick=c;}});
+    if(!pick)break; box=pick; const st=stats(box); if(st.cov>=0.7&&(!best||st.den>best.den)) best={...box,...st};
+  }
+  return best;
+}
+const BOX=prim();
+function pathCosts(d,vary){
+  const cc=vary?d.c:1, base=1.4+1.4*d.L;
+  return {R:cc*base, F:0.7+1.1*d.L+(d.s>1.08?cc*3.2:0), H:0.5*cc*base+0.5*(0.7+1.1*d.L)+0.15+(d.s>1.15?cc*1.5:0)};
+}
+function regrets(vary){
+  const out={R:[],F:[],H:[]};
+  D.forEach(d=>{const c=pathCosts(d,vary),m=Math.min(c.R,c.F,c.H);for(const k in out)out[k].push(c[k]-m);});
+  return out;
+}
+function crit(arr,how){const v=arr.slice().sort((a,b)=>a-b);if(how==='max')return v[v.length-1];if(how==='p90')return v[Math.floor(0.9*v.length)];return v[Math.floor(0.5*v.length)];}
+const t2=document.getElementById('t2'), t2b=document.getElementById('t2b'), names={R:'Reinforce',F:'Flex',H:'Hybrid'}, critName={max:'minimax regret',p90:'90th-percentile regret',p50:'median regret'};
+redraw.t2=function(){
+  clear(t2); clear(t2b);
+  const vary=document.getElementById('t2cost').checked, reg=regrets(vary);
+  const W=520,H=300,L=48,Rm=14,T=12,B=40, xs=u=>L+u*(W-L-Rm), ys=e=>H-B-e*(H-T-B);
+  el('line',{x1:L,y1:H-B,x2:W-Rm,y2:H-B,class:'ax'},t2); el('line',{x1:L,y1:T,x2:L,y2:H-B,class:'ax'},t2);
+  [0,0.5,1].forEach(v=>{el('text',{x:xs(v),y:H-B+16,'text-anchor':'middle',class:'axt'},t2,v);el('text',{x:L-8,y:ys(v)+4,'text-anchor':'end',class:'axt'},t2,v);});
+  el('text',{x:(W+L)/2,y:H-6,'text-anchor':'middle',class:'axt'},t2,'Unmanaged heating share');
+  el('text',{x:14,y:(H-B+T)/2,'text-anchor':'middle',class:'axt',transform:`rotate(-90 14 ${(H-B+T)/2})`},t2,'EV adoption');
+  const stressView=state.t2view==='stress', p=state.t2path, mx=Math.max(...reg[p])||1;
+  document.getElementById('t2pw').style.display=stressView?'none':'';
+  D.forEach((d,i)=>{
+    let fill,op=0.85;
+    if(stressView) fill=d.s>STRESS?'var(--c2)':'var(--muted)', op=d.s>STRESS?0.9:0.35;
+    else {fill='var(--warn)'; op=0.08+0.9*reg[p][i]/mx;}
+    el('circle',{cx:xs(d.u),cy:ys(d.e),r:3.6,fill,'fill-opacity':op},t2);
+  });
+  if(stressView){
+    el('rect',{x:xs(BOX.u0),y:ys(BOX.e1),width:xs(BOX.u1)-xs(BOX.u0),height:ys(BOX.e0)-ys(BOX.e1),fill:'none',stroke:'var(--ink)','stroke-width':2,'stroke-dasharray':'6 4'},t2);
+    el('text',{x:xs(BOX.u1)-6,y:ys(BOX.e1)+16,'text-anchor':'end',class:'lt',fill:'var(--ink)'},t2,'stress region');
+  }
+  /* bars */
+  const how=state.t2crit, vals={R:crit(reg.R,how),F:crit(reg.F,how),H:crit(reg.H,how)};
+  const win=Object.keys(vals).reduce((a,b)=>vals[a]<=vals[b]?a:b), vm=Math.max(...Object.values(vals),0.01);
+  ['R','F','H'].forEach((k,j)=>{
+    const y=8+j*36, w=(vals[k]/vm)*330;
+    el('text',{x:0,y:y+17,class:'lt',fill:'var(--ink)'},t2b,names[k]);
+    el('rect',{x:80,y:y+2,width:Math.max(w,2),height:22,rx:3,fill:k===win?'var(--c2)':'var(--line)'},t2b);
+    el('text',{x:86+Math.max(w,2),y:y+17,class:'lt',fill:'var(--ink)'},t2b,vals[k].toFixed(2)+(k===win?'  least regret':''));
+  });
+  let msg;
+  if(stressView){
+    const st=D.filter(d=>d.s>STRESS).length;
+    const rng=(nm,a,b)=>a>0.001&&b<0.999?`${nm} ${a.toFixed(2)} to ${b.toFixed(2)}`:a>0.001?`${nm} above ${a.toFixed(2)}`:b<0.999?`${nm} below ${b.toFixed(2)}`:null;
+    const rules=[rng('unmanaged heating',BOX.u0,BOX.u1),rng('EV adoption',BOX.e0,BOX.e1)].filter(Boolean).join(', ');
+    msg=`${st} of ${N} futures are stressed. A PRIM peel on these points finds the box: ${rules}. It holds ${Math.round(100*BOX.cov)}% of stressed futures (coverage), and ${Math.round(100*BOX.den)}% of futures inside it are stressed (density).`;
+  } else {
+    const why={R:'Reinforce regrets most in futures where flexibility would have done the job.',F:'Flex has zero regret in most futures, and large regret where it runs out and needs backup.',H:'Hybrid is seldom the cheapest, and seldom far behind.'};
+    msg=`Darker dots are futures where ${names[p]} regrets more. ${why[p]}`;
+  }
+  msg+=` Under ${critName[how]}${vary?', with unit cost varied':''}, ${names[win]} has the least regret.`;
+  document.getElementById('t2r').textContent=msg;
+};
+document.getElementById('t2cost').addEventListener('change',redraw.t2);
+
+/* Toy 3: substitution triangle */
+const t3=document.getElementById('t3');
+const CORN={R:[70,290],F:[260,40],U:[450,290]};
+function mix(set,node,gen){
+  const A=set==='blind'?0:set==='flat'?0.9:(node==='early'?1.8:0.15), G=gen==='low'?0.7:1.4, F=1.25, fmax=0.6, tau=0.25;
+  const f=fmax/(1+Math.exp((F-(A+G))/tau)), r=(1-f)*A/(A+G), u=(1-f)*G/(A+G);
+  return {r,f,u};
+}
+function pt(m){return [m.r*CORN.R[0]+m.f*CORN.F[0]+m.u*CORN.U[0], m.r*CORN.R[1]+m.f*CORN.F[1]+m.u*CORN.U[1]];}
+function dist(a,b){return Math.abs(a.r-b.r)+Math.abs(a.f-b.f)+Math.abs(a.u-b.u);}
+redraw.t3=function(){
+  clear(t3);
+  el('path',{d:`M${CORN.R}L${CORN.F}L${CORN.U}Z`,fill:'var(--soft)',stroke:'var(--line)','stroke-width':1.5},t3);
+  el('text',{x:CORN.R[0],y:CORN.R[1]+22,'text-anchor':'middle',class:'lt',fill:'var(--ink)'},t3,'Link reinforcement');
+  el('text',{x:CORN.F[0],y:CORN.F[1]-12,'text-anchor':'middle',class:'lt',fill:'var(--ink)'},t3,'Flexibility behind the link');
+  el('text',{x:CORN.U[0],y:CORN.U[1]+22,'text-anchor':'middle',class:'lt',fill:'var(--ink)'},t3,'Upstream supply');
+  const {t3set:s,t3node:n,t3gen:g}=state, cur=mix(s,n,g), blind=mix('blind',n,g), other=mix(s,n,g==='low'?'high':'low');
+  const pb=pt(blind), pc=pt(cur);
+  el('line',{x1:pb[0],y1:pb[1],x2:pc[0],y2:pc[1],stroke:'var(--c3)','stroke-width':2,'stroke-dasharray':'5 4'},t3);
+  el('circle',{cx:pb[0],cy:pb[1],r:9,fill:'none',stroke:'var(--c3)','stroke-width':2.5},t3);
+  el('circle',{cx:pc[0],cy:pc[1],r:8,fill:'var(--c3)'},t3);
+  const pct=x=>Math.round(100*x)+'%';
+  const dSet=dist(cur,blind), dGen=dist(cur,other);
+  let msg=`Spending: reinforcement ${pct(cur.r)}, flexibility ${pct(cur.f)}, upstream ${pct(cur.u)}.`;
+  if(s==='blind') msg+=' Blind sees distribution as free, so it spends almost nothing on flexibility.';
+  else {
+    if(s==='flat') msg+=' The flat adder gives every node the same cost, so both nodes get this mix.';
+    msg+= dSet>=dGen?' Here this setting moves the plan more than switching generation cost does.':' Here switching generation cost moves the plan more than this setting does.';
+  }
+  document.getElementById('t3r').textContent=msg;
+};
+
+show(1); redraw.t1(); redraw.t2(); redraw.t3();
+addEventListener('keydown',e=>{ if(e.target.closest&&e.target.closest('input,button,[role=button]'))return; });
+})();
+</script>
+</body>
+</html>
